@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TruthTag — Image Trust Infrastructure for Pakistan</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #080808;
+  --white: #f0ede6;
+  --accent: #c8f542;
+  --accent-dim: #9fca1a;
+  --gray-900: #111111;
+  --gray-800: #1a1a1a;
+  --gray-700: #242424;
+  --gray-500: #555;
+  --gray-400: #777;
+  --gray-300: #999;
+  --green: #3ecf7e;
+  --amber: #f5a623;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:var(--font-body);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.accent-text{color:var(--accent)}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:18px 48px;display:flex;justify-content:space-between;align-items:center;background:rgba(8,8,8,0.88);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.05)}
+.logo{font-family:var(--font-display);font-size:21px;font-weight:800;letter-spacing:-0.5px}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{font-size:14px;font-weight:400;color:var(--gray-300);text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:var(--white)}
+.btn-nav{background:var(--accent) !important;color:var(--black) !important;padding:9px 22px;border-radius:100px;font-weight:600 !important;transition:background .15s !important}
+.btn-nav:hover{background:var(--accent-dim) !important}
+.hero{min-height:100vh;display:flex;align-items:center;padding:140px 48px 100px;position:relative;overflow:hidden}
+.hero-glow{position:absolute;top:-150px;right:-100px;width:700px;height:700px;background:radial-gradient(circle,rgba(200,245,66,.055) 0%,transparent 65%);pointer-events:none}
+.hero-grid{max-width:1080px;margin:0 auto;width:100%;display:grid;grid-template-columns:1.1fr .9fr;gap:72px;align-items:center}
+.live-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(200,245,66,.09);border:1px solid rgba(200,245,66,.18);color:var(--accent);font-size:12px;font-weight:500;letter-spacing:.6px;text-transform:uppercase;padding:6px 14px;border-radius:100px;margin-bottom:28px}
+.live-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;animation:livepulse 2s ease-in-out infinite}
+@keyframes livepulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+h1{font-family:var(--font-display);font-size:clamp(44px,5.5vw,68px);font-weight:800;line-height:1.02;letter-spacing:-2.5px;margin-bottom:22px}
+.hero-desc{font-size:17px;font-weight:300;color:rgba(240,237,230,.6);line-height:1.75;margin-bottom:40px;max-width:480px}
+.hero-ctas{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.btn-primary{background:var(--accent);color:var(--black);padding:13px 28px;border-radius:100px;font-weight:600;font-size:15px;text-decoration:none;border:none;cursor:pointer;font-family:var(--font-body);transition:all .15s;display:inline-block}
+.btn-primary:hover{background:var(--accent-dim);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--white);padding:13px 28px;border-radius:100px;font-weight:400;font-size:15px;text-decoration:none;border:1px solid rgba(255,255,255,.12);transition:border-color .15s;cursor:pointer;font-family:var(--font-body)}
+.btn-ghost:hover{border-color:rgba(255,255,255,.35)}
+.demo-card{background:var(--gray-900);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:30px;position:relative}
+.demo-badge{position:absolute;top:-11px;left:22px;background:var(--accent);color:var(--black);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:4px 12px;border-radius:100px}
+.field-label{font-size:12px;font-weight:500;color:var(--gray-400);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.input-row{display:flex;gap:8px;margin-bottom:14px}
+.url-input{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:11px 15px;color:var(--white);font-size:13px;font-family:var(--font-body);outline:none;transition:border-color .15s}
+.url-input:focus{border-color:rgba(200,245,66,.4)}
+.url-input::placeholder{color:var(--gray-500)}
+.check-btn{background:var(--accent);color:var(--black);border:none;border-radius:10px;padding:11px 18px;font-weight:600;font-size:13px;cursor:pointer;font-family:var(--font-body);transition:background .15s;white-space:nowrap}
+.check-btn:hover{background:var(--accent-dim)}
+.check-btn:disabled{opacity:.4;cursor:not-allowed}
+.divider-or{display:flex;align-items:center;gap:12px;margin:14px 0}
+.divider-or::before,.divider-or::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.07)}
+.divider-or span{font-size:11px;color:var(--gray-500)}
+.upload-zone{border:1px dashed rgba(255,255,255,.13);border-radius:10px;padding:18px;text-align:center;cursor:pointer;position:relative;transition:all .15s}
+.upload-zone:hover{border-color:rgba(200,245,66,.3);background:rgba(200,245,66,.02)}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.upload-arrow{font-size:20px;margin-bottom:5px;opacity:.6}
+.upload-hint{font-size:12px;color:var(--gray-400)}
+.upload-hint em{color:var(--accent);font-style:normal}
+.result-area{margin-top:14px;border-radius:12px;padding:16px;display:none;animation:risein .25s ease}
+@keyframes risein{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.result-area.real{background:rgba(62,207,126,.08);border:1px solid rgba(62,207,126,.2)}
+.result-area.ai{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2)}
+.result-area.unknown{background:rgba(136,136,136,.08);border:1px solid rgba(136,136,136,.15)}
+.result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.result-verdict{font-family:var(--font-display);font-size:20px;font-weight:700}
+.result-verdict.real{color:var(--green)}
+.result-verdict.ai{color:var(--amber)}
+.result-verdict.unknown{color:var(--gray-300)}
+.result-pct{font-size:12px;color:var(--gray-400);background:rgba(255,255,255,.05);padding:4px 10px;border-radius:100px}
+.bar-track{height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;margin-bottom:8px}
+.bar-fill{height:100%;border-radius:2px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+.bar-fill.real{background:var(--green)}
+.bar-fill.ai{background:var(--amber)}
+.bar-fill.unknown{background:var(--gray-500)}
+.result-source{font-size:11px;color:var(--gray-400)}
+.loading-area{text-align:center;padding:18px;display:none}
+.dots{display:inline-flex;gap:5px}
+.dots span{width:5px;height:5px;background:var(--accent);border-radius:50%;animation:dotbounce 1.2s ease-in-out infinite}
+.dots span:nth-child(2){animation-delay:.15s}
+.dots span:nth-child(3){animation-delay:.3s}
+@keyframes dotbounce{0%,80%,100%{transform:translateY(0);opacity:1}40%{transform:translateY(-7px);opacity:.6}}
+.loading-text{font-size:12px;color:var(--gray-400);margin-top:8px}
+.metrics{border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05);padding:48px;display:grid;grid-template-columns:repeat(4,1fr)}
+.metric{padding:0 36px;text-align:center;border-right:1px solid rgba(255,255,255,.05)}
+.metric:first-child{padding-left:0}
+.metric:last-child{border-right:none}
+.metric-num{font-family:var(--font-display);font-size:40px;font-weight:800;color:var(--accent);letter-spacing:-1.5px;line-height:1}
+.metric-label{font-size:13px;color:var(--gray-400);margin-top:6px;line-height:1.4}
+.section{padding:100px 48px}
+.section-inner{max-width:1080px;margin:0 auto}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.section-title{font-family:var(--font-display);font-size:clamp(30px,4vw,46px);font-weight:800;letter-spacing:-1.5px;line-height:1.08;margin-bottom:18px}
+.section-body{font-size:17px;font-weight:300;color:rgba(240,237,230,.55);line-height:1.75;max-width:560px;margin-bottom:56px}
+.facts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.fact-card{background:var(--gray-800);padding:36px 32px}
+.fact-card:first-child{border-radius:16px 0 0 16px}
+.fact-card:last-child{border-radius:0 16px 16px 0}
+.fact-num{font-family:var(--font-display);font-size:44px;font-weight:800;color:var(--accent);letter-spacing:-2px;line-height:1;margin-bottom:14px}
+.fact-card h3{font-family:var(--font-display);font-size:17px;font-weight:700;margin-bottom:10px;letter-spacing:-.2px}
+.fact-card p{font-size:14px;font-weight:300;color:rgba(240,237,230,.5);line-height:1.75}
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.step{background:var(--gray-800);padding:40px 32px}
+.step:first-child{border-radius:16px 0 0 16px}
+.step:last-child{border-radius:0 16px 16px 0}
+.step-number{font-family:var(--font-display);font-size:72px;font-weight:800;color:rgba(200,245,66,.06);line-height:1;letter-spacing:-3px;margin-bottom:28px}
+.step h3{font-family:var(--font-display);font-size:19px;font-weight:700;margin-bottom:12px;letter-spacing:-.3px}
+.step p{font-size:14px;font-weight:300;color:rgba(240,237,230,.55);line-height:1.75}
+.pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+.price-card{background:var(--gray-800);padding:36px 28px}
+.price-card:first-child{border-radius:16px 0 0 16px}
+.price-card:last-child{border-radius:0 16px 16px 0}
+.price-card.highlight{background:var(--accent)}
+.plan-name{font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--gray-400);margin-bottom:20px}
+.price-card.highlight .plan-name{color:rgba(0,0,0,.45)}
+.plan-price{font-family:var(--font-display);font-size:28px;font-weight:800;letter-spacing:-1px;line-height:1;margin-bottom:5px}
+.price-card.highlight .plan-price{color:var(--black)}
+.plan-cycle{font-size:12px;color:var(--gray-400);margin-bottom:24px}
+.price-card.highlight .plan-cycle{color:rgba(0,0,0,.45)}
+.plan-features{list-style:none}
+.plan-features li{font-size:13px;font-weight:300;color:rgba(240,237,230,.65);padding:7px 0;border-top:1px solid rgba(255,255,255,.06);display:flex;gap:10px;align-items:flex-start;line-height:1.5}
+.price-card.highlight .plan-features li{color:rgba(0,0,0,.65);border-top-color:rgba(0,0,0,.1)}
+.plan-features li::before{content:'—';color:var(--accent);flex-shrink:0;font-size:12px;margin-top:1px}
+.price-card.highlight .plan-features li::before{color:rgba(0,0,0,.35)}
+.compare-wrap{overflow:hidden;border-radius:16px;border:1px solid rgba(255,255,255,.06)}
+.compare-table{width:100%;border-collapse:collapse}
+.compare-table thead th{font-family:var(--font-display);font-size:14px;font-weight:700;padding:18px 22px;text-align:left;background:var(--gray-800);border-bottom:1px solid rgba(255,255,255,.06)}
+.compare-table thead th:not(:first-child){text-align:center}
+.compare-table thead th:last-child{color:var(--accent)}
+.compare-table tbody td{padding:13px 22px;font-size:13px;font-weight:300;color:rgba(240,237,230,.6);border-bottom:1px solid rgba(255,255,255,.04);background:var(--gray-900)}
+.compare-table tbody tr:last-child td{border-bottom:none}
+.compare-table tbody td:not(:first-child){text-align:center}
+.compare-table tbody td:first-child{font-weight:400;color:var(--white)}
+.compare-table tbody td:last-child{color:var(--accent);font-weight:500}
+.tick{color:var(--green);font-size:15px}
+.cross{color:rgba(255,255,255,.15);font-size:15px}
+.contact-wrap{background:var(--gray-800);border-radius:24px;padding:64px;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start;margin:0 48px 100px;border:1px solid rgba(255,255,255,.05)}
+.contact-title{font-family:var(--font-display);font-size:clamp(26px,3.5vw,38px);font-weight:800;letter-spacing:-1.2px;line-height:1.1;margin-bottom:16px}
+.contact-desc{font-size:15px;font-weight:300;color:rgba(240,237,230,.5);line-height:1.75;margin-bottom:36px}
+.contact-details{display:flex;flex-direction:column;gap:18px}
+.contact-row{display:flex;gap:14px;align-items:flex-start}
+.contact-icon{width:38px;height:38px;border-radius:10px;background:rgba(200,245,66,.08);border:1px solid rgba(200,245,66,.15);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.contact-row-label{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--gray-400);margin-bottom:3px}
+.contact-row-val{font-size:14px;color:var(--white)}
+.pilot-highlight{background:rgba(200,245,66,.05);border:1px solid rgba(200,245,66,.13);border-radius:14px;padding:20px;margin-top:28px}
+.pilot-highlight h4{font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--accent);margin-bottom:8px}
+.pilot-highlight p{font-size:13px;font-weight:300;color:rgba(240,237,230,.5);line-height:1.65}
+.form{display:flex;flex-direction:column;gap:10px}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.f-input,.f-select,.f-textarea{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:12px 16px;color:var(--white);font-size:14px;font-family:var(--font-body);outline:none;transition:border-color .15s;width:100%}
+.f-input:focus,.f-select:focus,.f-textarea:focus{border-color:rgba(200,245,66,.35)}
+.f-input::placeholder,.f-textarea::placeholder{color:var(--gray-500)}
+.f-select{appearance:none;cursor:pointer}
+.f-select option{background:var(--gray-800)}
+.f-textarea{resize:vertical;min-height:90px}
+.f-submit{background:var(--accent);color:var(--black);border:none;border-radius:10px;padding:14px;font-weight:600;font-size:15px;cursor:pointer;font-family:var(--font-body);transition:background .15s;margin-top:4px}
+.f-submit:hover{background:var(--accent-dim)}
+.form-success{display:none;text-align:center;padding:48px 20px}
+.form-success h3{font-family:var(--font-display);font-size:24px;font-weight:800;color:var(--accent);margin-bottom:10px}
+.form-success p{font-size:14px;color:var(--gray-400)}
+footer{border-top:1px solid rgba(255,255,255,.05);padding:28px 48px;display:flex;justify-content:space-between;align-items:center}
+footer p{font-size:13px;color:var(--gray-500)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Truth<span class="accent-text">Tag</span></div>
+  <div class="nav-links">
+    <a href="#problem">The problem</a>
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#contact" class="btn-nav">Request pilot</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid">
+    <div>
+      <div class="live-badge"><div class="live-dot"></div>Live in Pakistan</div>
+      <h1>Is this listing<br><span class="accent-text">photo real?</span></h1>
+      <p class="hero-desc">TruthTag detects AI-generated and fake images in under 2 seconds — 91% accuracy, built specifically for Pakistani marketplaces and platforms.</p>
+      <div class="hero-ctas">
+        <a href="#contact" class="btn-primary">Request free pilot →</a>
+        <a href="#how" class="btn-ghost">How it works</a>
+      </div>
+    </div>
+    <div class="demo-card">
+      <div class="demo-badge">Try it live</div>
+      <p class="field-label">Paste an image URL</p>
+      <div class="input-row">
+        <input type="text" class="url-input" id="urlInput" placeholder="https://example.com/car.jpg">
+        <button class="check-btn" id="checkBtn" onclick="checkUrl()">Check</button>
+      </div>
+      <div class="divider-or"><span>or upload a file</span></div>
+      <div class="upload-zone">
+        <input type="file" id="fileInput" accept="image/*" onchange="checkFile(this)">
+        <div class="upload-arrow">↑</div>
+        <div class="upload-hint">Drop image or <em>browse</em> — JPG, PNG, WebP</div>
+      </div>
+      <div class="loading-area" id="loading">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <p class="loading-text">Analysing across 3 detection layers...</p>
+      </div>
+      <div class="result-area" id="result">
+        <div class="result-header">
+          <div class="result-verdict" id="rVerdict"></div>
+          <div class="result-pct" id="rPct"></div>
+        </div>
+        <div class="bar-track"><div class="bar-fill" id="rBar" style="width:0%"></div></div>
+        <div class="result-source" id="rSource"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="metrics">
+  <div class="metric"><div class="metric-num">91%</div><div class="metric-label">Detection accuracy</div></div>
+  <div class="metric"><div class="metric-num">&lt;2s</div><div class="metric-label">Average response</div></div>
+  <div class="metric"><div class="metric-num">3</div><div class="metric-label">Detection layers</div></div>
+  <div class="metric"><div class="metric-num">PKR</div><div class="metric-label">Local billing, no forex</div></div>
+</div>
+
+<div class="section" id="problem">
+  <div class="section-inner">
+    <div class="eyebrow">The problem</div>
+    <h2 class="section-title">Fake listings are<br>costing Pakistani platforms.</h2>
+    <p class="section-body">AI-generated images make it trivially easy to create convincing fake listings at scale. Real users lose trust. Platforms lose revenue and face regulatory pressure.</p>
+    <div class="facts-grid">
+      <div class="fact-card">
+        <div class="fact-num">25%</div>
+        <h3>Of car listings are fraud</h3>
+        <p>OLX's own published data shows 1 in 4 listings is rejected for fraud at the initial screening stage — before it even goes live.</p>
+      </div>
+      <div class="fact-card">
+        <div class="fact-num">CCP</div>
+        <h3>Regulatory pressure is real</h3>
+        <p>Pakistan's Competition Commission formally engaged OLX Pakistan about misleading ads and fake listings, demanding robust redressal mechanisms.</p>
+      </div>
+      <div class="fact-card">
+        <div class="fact-num">0</div>
+        <h3>Local solutions exist today</h3>
+        <p>OLX Group has AI fraud detection live in Europe. Pakistan is not yet covered. No Pakistani company offers this service. TruthTag is the first.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="how" style="padding-top:0">
+  <div class="section-inner">
+    <div class="eyebrow">How it works</div>
+    <h2 class="section-title">Three layers.<br>One clear answer.</h2>
+    <p class="section-body">Every image passes through three independent detection systems in sequence. The most confident signal wins.</p>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-number">01</div>
+        <h3>EXIF metadata forensics</h3>
+        <p>Real camera photos carry device metadata — make, model, GPS coordinates, shutter speed. AI-generated images have none of this. Free, instant, zero API cost.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">02</div>
+        <h3>AI model detection</h3>
+        <p>91% accurate visual analysis covering all major generators — Midjourney, DALL-E 3, Stable Diffusion, Flux. Updated continuously as new generators emerge.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">03</div>
+        <h3>Confidence threshold</h3>
+        <p>Every result includes a score 0–100%. Your platform sets the action — flag at 60%, auto-reject at 90%, route to human review in between.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="pricing" style="padding-top:0">
+  <div class="section-inner">
+    <div class="eyebrow">Pricing</div>
+    <h2 class="section-title">Billed in Rupees.<br>No forex. No surprises.</h2>
+    <p class="section-body">All plans include a free 30-day pilot. Integration support included at every tier. Cancel anytime, no lock-in.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="plan-name">Pilot</div>
+        <div class="plan-price">Free</div>
+        <div class="plan-cycle">30 days · no commitment</div>
+        <ul class="plan-features">
+          <li>10,000 image checks</li>
+          <li>Full API access</li>
+          <li>WhatsApp support</li>
+          <li>Integration help included</li>
+          <li>Fraud report at end of pilot</li>
+        </ul>
+      </div>
+      <div class="price-card highlight">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price">Rs 50,000</div>
+        <div class="plan-cycle">per month · PKR billing</div>
+        <ul class="plan-features">
+          <li>50,000 checks / month</li>
+          <li>REST API + webhooks</li>
+          <li>WhatsApp support</li>
+          <li>Usage dashboard</li>
+          <li>Monthly fraud digest</li>
+        </ul>
+      </div>
+      <div class="price-card">
+        <div class="plan-name">Growth</div>
+        <div class="plan-price">Rs 120,000</div>
+        <div class="plan-cycle">per month · PKR billing</div>
+        <ul class="plan-features">
+          <li>150,000 checks / month</li>
+          <li>Priority SLA response</li>
+          <li>Custom confidence rules</li>
+          <li>Dedicated account manager</li>
+          <li>Monthly fraud report</li>
+        </ul>
+      </div>
+      <div class="price-card">
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price">Rs 250,000</div>
+        <div class="plan-cycle">per month · negotiable</div>
+        <ul class="plan-features">
+          <li>Unlimited checks</li>
+          <li>Custom model fine-tuning</li>
+          <li>On-site integration support</li>
+          <li>Dedicated engineer</li>
+          <li>Uptime SLA guarantee</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="compare" style="padding-top:0">
+  <div class="section-inner">
+    <div class="eyebrow">Why not go direct</div>
+    <h2 class="section-title">Global APIs exist.<br>They are not built for Pakistan.</h2>
+    <p class="section-body">Sightengine and Hive charge in USD, have no local presence, and do not understand Pakistani listing categories. TruthTag does.</p>
+    <div class="compare-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Sightengine</th>
+            <th>Hive Moderation</th>
+            <th>TruthTag</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Billing currency</td><td>USD only</td><td>USD enterprise</td><td>Pakistani Rupees</td></tr>
+          <tr><td>Self-serve signup</td><td><span class="tick">✓</span></td><td><span class="cross">✕</span> Contact sales</td><td><span class="tick">✓</span> Instant pilot</td></tr>
+          <tr><td>Free pilot</td><td>2,000 checks only</td><td>None</td><td>10,000 checks · 30 days</td></tr>
+          <tr><td>Local support (WhatsApp)</td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td><td><span class="tick">✓</span> Included</td></tr>
+          <tr><td>Integration assistance</td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td><td><span class="tick">✓</span> Free at every tier</td></tr>
+          <tr><td>Pakistani marketplace expertise</td><td><span class="cross">✕</span></td><td><span class="cross">✕</span></td><td><span class="tick">✓</span> Built for it</td></tr>
+          <tr><td>Equivalent monthly cost (PKR)</td><td>~Rs 81,000/mo</td><td>Not accessible</td><td>Rs 50,000/mo</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="contact-wrap" id="contact">
+  <div>
+    <div class="eyebrow">Get started</div>
+    <h2 class="contact-title">Request your free 30-day pilot</h2>
+    <p class="contact-desc">No commitment. No upfront cost. Your engineering team integrates our API in one afternoon — we handle the rest.</p>
+    <div class="contact-details">
+      <div class="contact-row">
+        <div class="contact-icon">✉</div>
+        <div>
+          <div class="contact-row-label">Email</div>
+          <div class="contact-row-val">hello@truthtag.pk</div>
+        </div>
+      </div>
+      <div class="contact-row">
+        <div class="contact-icon">💬</div>
+        <div>
+          <div class="contact-row-label">WhatsApp</div>
+          <div class="contact-row-val">Available on request</div>
+        </div>
+      </div>
+      <div class="contact-row">
+        <div class="contact-icon">⚡</div>
+        <div>
+          <div class="contact-row-label">API endpoint</div>
+          <div class="contact-row-val" style="font-size:12px;font-family:monospace;opacity:.7">POST /api/check-image/</div>
+        </div>
+      </div>
+    </div>
+    <div class="pilot-highlight">
+      <h4>Free pilot includes</h4>
+      <p>10,000 image checks · Full API access · Integration support · Fraud detection report at end of 30 days · No credit card required</p>
+    </div>
+  </div>
+  <div>
+    <div class="form" id="contactForm">
+      <div class="form-row-2">
+        <input type="text" class="f-input" id="fn" placeholder="Your name">
+        <input type="text" class="f-input" id="fc" placeholder="Company name">
+      </div>
+      <input type="email" class="f-input" id="fe" placeholder="Work email">
+      <select class="f-select" id="ft">
+        <option value="" disabled selected>Platform type</option>
+        <option>Classifieds — OLX, PakWheels, similar</option>
+        <option>E-commerce — Daraz, similar</option>
+        <option>Real estate platform</option>
+        <option>Recruitment platform</option>
+        <option>News or media organisation</option>
+        <option>Other</option>
+      </select>
+      <input type="text" class="f-input" id="fv" placeholder="Approx. daily image uploads">
+      <textarea class="f-textarea" id="fm" placeholder="Tell us about your fake listing problem (optional)"></textarea>
+      <button class="f-submit" onclick="submitForm()">Request free pilot →</button>
+    </div>
+    <div class="form-success" id="formSuccess">
+      <h3>Request received ✓</h3>
+      <p>We will be in touch within 24 hours with your pilot API key.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div style="font-family:var(--font-display);font-size:17px;font-weight:800">Truth<span class="accent-text">Tag</span></div>
+  <p>AI image trust infrastructure for Pakistan · 2026</p>
+  <p>Built in Karachi</p>
+</footer>
+
+<script>
+const API='https://truthtag-backend-production.up.railway.app/api/check-image/';
+const LABELS={real:'Real image',ai:'AI generated',unknown:'Uncertain'};
+const SOURCES={exif:'EXIF metadata analysis',sightengine:'AI model detection',huggingface:'Fallback detection'};
+
+function setLoading(on){
+  document.getElementById('loading').style.display=on?'block':'none';
+  document.getElementById('result').style.display='none';
+}
+
+function showResult(type,confidence,layer){
+  const pct=Math.round((confidence||0)*100);
+  const t=['real','ai'].includes(type)?type:'unknown';
+  const el=document.getElementById('result');
+  el.className='result-area '+t;
+  document.getElementById('rVerdict').className='result-verdict '+t;
+  document.getElementById('rVerdict').textContent=LABELS[t];
+  document.getElementById('rPct').textContent=pct+'% confidence';
+  const bar=document.getElementById('rBar');
+  bar.className='bar-fill '+t;
+  bar.style.width='0%';
+  setTimeout(()=>{bar.style.width=pct+'%'},50);
+  document.getElementById('rSource').textContent='Via '+(SOURCES[layer]||layer||'detection');
+  document.getElementById('loading').style.display='none';
+  el.style.display='block';
+}
+
+async function checkUrl(){
+  const url=document.getElementById('urlInput').value.trim();
+  if(!url){document.getElementById('urlInput').focus();return;}
+  document.getElementById('checkBtn').disabled=true;
+  setLoading(true);
+  try{
+    const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image_url:url,platform:'demo'})});
+    const d=await r.json();
+    showResult(d.type,d.confidence,d.layer);
+  }catch(e){showResult('unknown',0,'error');}
+  document.getElementById('checkBtn').disabled=false;
+}
+
+async function checkFile(input){
+  if(!input.files[0])return;
+  setLoading(true);
+  const reader=new FileReader();
+  reader.onload=async function(e){
+    const b64=e.target.result.split(',')[1];
+    try{
+      const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image_base64:b64,platform:'demo'})});
+      const d=await r.json();
+      showResult(d.type,d.confidence,d.layer);
+    }catch(e){showResult('unknown',0,'error');}
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+document.getElementById('urlInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkUrl();});
+
+function submitForm(){
+  const fn=document.getElementById('fn').value.trim();
+  const fc=document.getElementById('fc').value.trim();
+  const fe=document.getElementById('fe').value.trim();
+  const ft=document.getElementById('ft').value;
+  if(!fn||!fc||!fe||!ft){alert('Please fill in name, company, email and platform type.');return;}
+  document.getElementById('contactForm').style.display='none';
+  document.getElementById('formSuccess').style.display='block';
+}
+</script>
+</body>
+</html>
